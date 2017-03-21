@@ -45,6 +45,10 @@ class Cursor():
         sql = "INSERT INTO %s (%s) VALUES (%s)" % (table_name, ','.join(fields), ','.join(values))
         utils.write_log('api').info("Insert sql: %s" % sql)
         return sql
+    
+    def execute_insert_sql(self, table_name, data):
+        sql = self._insert_sql(table_name, data)
+        return self._execute(sql)
 
     def _select_sql(self, table_name, fields , where=None, order=None, asc_order=True, limit=None):
         if isinstance(where, dict) and where:

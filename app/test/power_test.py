@@ -27,6 +27,7 @@ def rpc():
     else:
         print result
         return result
+    '''
     # create 请求
     data = {
         'jsonrpc': '2.0',
@@ -39,6 +40,52 @@ def rpc():
             'commnet':'cdn刷新'
          }
     }
+    '''
+    '''
+    # getlist 请求
+    data = {
+        'jsonrpc': '2.0',
+        'method': 'power.getlist'
+        'id': '1',
+        'params': {
+            'output':['id','name', 'name_cn'],
+         }
+    }
+    '''
+    '''
+    # delete 请求 
+    data = {
+        'jsonrpc': '2.0',
+        'method': 'power.delete'
+        'id': '1',
+        'params': {
+            'where':{'id':12}
+         }
+    }
+    '''
+    '''
+    # update请求
+    data = {
+        'jsonrpc': '2.0',
+        'method': 'power.delete'
+        'id': '1',
+        'params': {
+            'data': {'name_cn': 'cdntest'}
+            'where':{'id':3}
+         }
+    }
+    '''
+    # getbyid 请求
+    data = {
+        'jsonrpc': '2.0',
+        'method': 'power.getbyid'
+        'id': '1',
+        'params': {
+            'output':['id','name', 'name_cn'],
+            'where' : ['name':'cdn']
+         }
+    }
+    
     r = requests.post(url, headers=headers, json=data)
     print r.status_code
     print r.text
