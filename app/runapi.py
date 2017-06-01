@@ -21,4 +21,4 @@ app.config['db'] = db.Cursor(config)
 if __name__ == '__main__':
     app.run(host=config.get('bind', '0.0.0.0'),
         port=int(config.get('port')),
-        debug=True)
+        debug=False)

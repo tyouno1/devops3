@@ -27,6 +27,6 @@ def login():
             return json.dumps({'code':0, 'authorization':token})
         else:
             return json.dumps({'code':1, "errmsg":"输入密码有误"})
-        
-        if result[''] == 1:
-            return json.dumps()
+    except:
+        utils.write_log('api').error('login error: %s', traceback.format_exc())
+        return json.dumps({"code":1, "errmsg": "login fail"})
