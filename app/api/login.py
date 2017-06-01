@@ -14,9 +14,19 @@ def login():
         passwd = hashlib.md5(passwd).hexdigest()
         if not (username and passwd):
             return josin.dumps({'code':1, 'errmsg':'需要输入用户名和密码'})
-        result = app.config['db'].get_one_result()
+        result = app.config['db'].get_one_result('user',['id','username','password','r_id','is_lock'],
+            {'username':username})
         if not result:
-            return
+            return json.dumps({"code":1,"errmsg":"用户不存在"})
+        if result['is_lock'] == 1:
+            return json.dumps({"code":1,"errmsg":"用户已锁定"})
+        if passwd == result['password']:
+            data = {'last_login': time.strftime('%Y-%m-%d %H:%M:%S')}
+            app.config['db'].execute_update_sql('user', data, {'username': username})
+            utils.write_log('api').info('%s login success' % username)
+            return json.dumps({'code':0, 'authorization':token})
+        else:
+            return json.dumps({'code':1, "errmsg":"输入密码有误"})
         
         if result[''] == 1:
             return json.dumps()

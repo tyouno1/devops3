@@ -3,7 +3,7 @@
 
 from api import app
 import os, sys
-#import db
+import db
 import utils
 
 # session 使用需要设置secret_key
@@ -16,7 +16,7 @@ config = utils.get_config('api')
 app.config.update(config)
 
 # 实例化数据库类，并将实例化的对象导入配置
-#app.config['cursor'] = db.Cursor(config)
+app.config['db'] = db.Cursor(config)
 
 if __name__ == '__main__':
     app.run(host=config.get('bind', '0.0.0.0'),
