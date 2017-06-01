@@ -23,6 +23,7 @@ def login():
         if passwd == result['password']:
             data = {'last_login': time.strftime('%Y-%m-%d %H:%M:%S')}
             app.config['db'].execute_update_sql('user', data, {'username': username})
+            token = utils.get_validate(result['username'], result['id'], result['r_id'], app.config['passport_key'])
             utils.write_log('api').info('%s login success' % username)
             return json.dumps({'code':0, 'authorization':token})
         else:
