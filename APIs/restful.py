@@ -11,10 +11,10 @@ def index():
         name = request.args.get("name") #curl "http://192.168.137.101:5001/?name=wd"
         return "GET User is %s" % name
     elif request.method == 'POST':
-        name = request.form.get("name") #curl "http://192.168.137.101:5001/" -d "name=wd" -X POST
-        #data = request.get_json()
-        #data = json.loads(data)
-        #name = data['name']
+        #name = request.form.get("name") #curl "http://192.168.137.101:5001/" -d "name=wd" -X POST
+        data = request.get_json()
+        data = json.loads(data)
+        name = data['name']
         return "POST User is %s" % name
     elif request.method=='PUT':
         name = request.form.get("name") #curl "http://192.168.137.101:5001/" -d "name=wd" -X PUT
