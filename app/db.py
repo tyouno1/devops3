@@ -38,6 +38,10 @@ class Cursor():
         for k, v in data.items():
             fields.append(k)
             values.append("'%s'" % v)
+        # 如果出现fields和data中的元素不一致的情况下，可以通过以下方法，指定fields中的内容，再插入数据库中
+        # fields = ['id','name','passwd']
+        # data = {"id":1,"name":"wd",passwd="123456",repasswd="654321"}
+        # sql = "INSERT INTO %s (%s) VALUES (%s)" % (table_name, ','.join(fields), ','.join(['"%s"' % data[x] for x in fields]))
         sql = "INSERT INTO %s (%s) VALUES (%s)" % (table_name, ','.join(fields), ','.join(values))
         utils.write_log('api').info("Insert sql: %s" % sql)
         return sql
@@ -77,5 +81,52 @@ class Cursor():
         else:
             return {}
 
-     def get_results(self, table_name, fields, where=None, order=None, asc_order=True, limit=None):
-        
+    def get_results(self, table_name, fields, where=None, order=None, asc_order=True, limit=None):
+        sql = self._select(sql)
+        self._execute(sql)
+        result_sets = self._fetchall()
+        return [dict([(k, '' if row[i] is None else row[i]) for i , k in enumerate(fileds)]) for row in result_sets]
+
+    def _update_sql(self, table_name, data, where, fields=None):
+        # 字典format成为字符串的方法
+        # sql = "update user set name=%(name)s, name=%(passwd)s where id = %(id)s" % data
+        if not (where and isinstance(where, dict)):
+            return ""
+        where_cond = ["%s='%s'" % (k,v) for k, v in where.items()]
+        if fields:
+            conditions = ["%s='%s'" % (k, data[k]) for k in fields]
+        else:
+            conditions = ["%s='%s'" % (k, data[k]) for k in data]
+        sql = "UPDATE %s SET %s WHERE %s" % (table_name, ','.join(conditions), ' AND '.join(where_cond)
+        utils.write_log('api').info('Update sql:"%s"' % sql)
+        return sql
+
+    def execute_update_sql(self, table_name, data, where, fields=None):
+        sql = self._udpate_sql(table_name, data, where, fields)
+        if sql:
+            return self._execute(sql)
+        else:
+            return ""
+
+    def _delete_sql(self, table_name, where):
+        if not (where and isinstance(where, dict)):
+            return ""
+        where_cond = ["%s='%s'" % (k,v) for k,v in where.items()]
+        sql = "DELETE FROM %s WHERE %s" % (table_name, ' AND '.join(where_cond))
+        utils.write_log('api').info('Delete sql: %s' % sql)
+        return sql
+
+    def if_id_exist(self, table_name, field_id):
+        if isinstance(field_id, list):
+            id_num = len(field_id)
+            result = self.get_results(table_name, ['id'], {"id":field_id})
+            if id_num != len(result):
+                result=False
+        else:
+            result = self.get_one_result(table_name, ['id'], {"id":field_id})
+        if result:
+            return True
+        else:
+            util.write_log('api').error("%s '%s' is not exist")
+            return False
+            
