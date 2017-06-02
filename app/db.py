@@ -131,6 +131,6 @@ class Cursor():
         if result:
             return True
         else:
-            util.write_log('api').error("%s '%s' is not exist")
+            util.write_log('api').error("%s '%s' is not exist" %(table_name, field_id))
             return False
-            
+
