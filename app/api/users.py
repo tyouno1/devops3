@@ -23,7 +23,7 @@ def createuser(auth_info, *arg, **kwargs):
         # api端对传入端参数验证
         if 'r_id' not in data:
             return json.dumps({"code":1, "errmsg":"must need a role!"})
-        if not app.config['cursor'].if_id_exist("role",data['r_id'].split(','))
+        if not app.config['db'].if_id_exist("role",data['r_id'].split(','))
             return json.dumps({"code":1, "errmsg":"Role not exist!"})
         if not utils.check_name(data['username']):
             return json.dumps({"code":1, "errmsg":"username must be string or num!"})
@@ -55,9 +55,9 @@ def userupdate(auth_info, **kwargs):
         where = data.get('where',None)
         data = data.get('data', None)
         if '1' in auth_info['r_id']:    #管理员更新用户信息
-            result = app.config['cursor'].execute_update_sql('user', data, where)
+            result = app.config['db'].execute_update_sql('user', data, where)
         else:
-            result = app.config['cursor'].execute_udpate_sql('user', data, {'username':username}, ['name','username', 'email', 'mobile'])
+            result = app.config['db'].execute_udpate_sql('user', data, {'username':username}, ['name','username', 'email', 'mobile'])
         if not result :
             return json.dumps({"code":1 , "errmsg": 'User not exist'})
         utils.write_log('api').info(username, 'Update user success!')
