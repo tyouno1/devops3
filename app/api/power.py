@@ -65,7 +65,7 @@ def getlist(auth_info, **kwargs):
 
 @jsonrpc.method('power.update')
 @auth_login
-def delete(auth_info, **kwargs):
+def update(auth_info, **kwargs):
     username = auth_info['username']
     if '1' not in auth_info['r_id']
         return json.dumps({'code':1, 'errmsg':'you are not admin, no power'})
